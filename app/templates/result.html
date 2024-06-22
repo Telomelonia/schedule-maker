@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Schedule Result</title>
+</head>
+<body>
+    <h1>Generated Schedule</h1>
+    {% if schedule %}
+        <ul>
+        {% for s in schedule %}
+            <li>{{ s }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No schedule found.</p>
+    {% endif %}
+    <a href="/">Back to form</a>
+</body>
+</html>
