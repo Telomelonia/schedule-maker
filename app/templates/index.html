@@ -6,13 +6,26 @@
 <body>
     <h1>Create Schedule</h1>
     <form method="post">
-        <label for="teacher">Teacher:</label>
-        <input type="text" id="teacher" name="teacher"><br><br>
-        <label for="subject">Subject:</label>
-        <input type="text" id="subject" name="subject"><br><br>
-        <label for="classesCount">Number of Classes per Week:</label>
-        <input type="number" id="classesCount" name="classesCount"><br><br>
+        <div id="teachers">
+            <div class="teacher">
+                <label>Teacher:</label>
+                <input type="text" name="teacher[]">
+                <label>Free Time Slots (comma-separated, e.g., Mon-9, Tue-10):</label>
+                <input type="text" name="time_slots[]">
+                <label>Number of Classes:</label>
+                <input type="number" name="classes_count[]">
+            </div>
+        </div>
+        <button type="button" onclick="addTeacher()">Add Another Teacher</button><br><br>
         <button type="submit">Submit</button>
     </form>
+    <script>
+        function addTeacher() {
+            let container = document.getElementById("teachers");
+            let newTeacher = container.children[0].cloneNode(true);
+            newTeacher.querySelectorAll("input").forEach(input => input.value = "");
+            container.appendChild(newTeacher);
+        }
+    </script>
 </body>
 </html>

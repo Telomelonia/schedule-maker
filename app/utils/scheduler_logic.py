@@ -1,15 +1,18 @@
 from constraint import Problem
 
-def create_schedule(teacher, subject, num_classes):
+def create_schedule(teachers, time_slots, num_classes):
     problem = Problem()
-    times = ['Day{}-Slot{}'.format(day, slot) for day in range(1, 6) for slot in range(1, 4)]
+    
+    # Convert string time slots into lists
+    time_slot_lists = [slot.split(', ') for slot in time_slots]
 
-    # Add variables for the teacher's schedule
-    problem.addVariable(teacher, times)
+    # Add variables for each teacher, where the domain is their available time slots
+    for teacher, slots in zip(teachers, time_slot_lists):
+        problem.addVariable(teacher, slots)
 
-    # Dummy constraint for demonstration
-    problem.addConstraint(lambda x: x.endswith('1'), [teacher])  # Teacher prefers Slot 1
+    # Add a constraint that no two teachers can have a class at the same time
+    problem.addConstraint(lambda *args: len(set(args)) == len(args), teachers)
 
-    # Retrieve solutions
+    # Try to find multiple solutions
     solutions = problem.getSolutions()
-    return solutions
+    return solutions[:5]  # Return top 5 solutions for simplicity

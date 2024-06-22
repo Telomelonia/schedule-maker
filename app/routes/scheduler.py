@@ -6,9 +6,9 @@ scheduler_bp = Blueprint('scheduler', __name__)
 @scheduler_bp.route('/', methods=['GET', 'POST'])
 def schedule():
     if request.method == 'POST':
-        teacher = request.form['teacher']
-        subject = request.form['subject']
-        num_classes = int(request.form['classesCount'])
-        schedule = create_schedule(teacher, subject, num_classes)
-        return render_template('result.html', schedule=schedule)
+        teachers = request.form.getlist('teacher[]')
+        time_slots = request.form.getlist('time_slots[]')
+        classes_count = request.form.getlist('classes_count[]')
+        schedules = create_schedule(teachers, time_slots, [int(count) for count in classes_count])
+        return render_template('result.html', schedules=schedules)
     return render_template('index.html')

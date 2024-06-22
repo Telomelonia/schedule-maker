@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Schedule Result</title>
+    <title>Schedule Results</title>
 </head>
 <body>
-    <h1>Generated Schedule</h1>
-    {% if schedule %}
+    <h1>Generated Schedules</h1>
+    {% for schedule in schedules %}
+        <h3>Schedule:</h3>
         <ul>
-        {% for s in schedule %}
-            <li>{{ s }}</li>
-        {% endfor %}
+            {% for teacher, slot in schedule.items() %}
+                <li>{{ teacher }}: {{ slot }}</li>
+            {% endfor %}
         </ul>
-    {% else %}
-        <p>No schedule found.</p>
-    {% endif %}
+    {% endfor %}
     <a href="/">Back to form</a>
 </body>
 </html>
