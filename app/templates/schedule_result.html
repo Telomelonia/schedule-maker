@@ -23,18 +23,22 @@
     {% if schedule %}
         <table>
             <tr>
-                <th>Time Slot</th>
-                {% for day in range(schedule|length) %}
-                    <th>Day {{ loop.index }}</th>
-                {% endfor %}
+                <th>Time</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+                <th>Sunday</th>
             </tr>
-            {% for slot in range(schedule[0]|length) %}
+            {% for hour in range(24) %}
                 <tr>
-                    <td>{{ slot }}:00</td>
-                    {% for day in range(schedule|length) %}
+                    <td>{{ '%02d:00' % hour }}</td>
+                    {% for day in range(7) %}
                         <td>
-                            {% if schedule[day][slot] is not none %}
-                                Teacher {{ schedule[day][slot] + 1 }}
+                            {% if schedule[day][hour] %}
+                                {{ schedule[day][hour] }}
                             {% else %}
                                 Free
                             {% endif %}
@@ -46,6 +50,6 @@
     {% else %}
         <p>No schedule available. Please check the inputs or try again.</p>
     {% endif %}
-    <a href="/planner/">Back to form</a>
+    <a href="/">Back to form</a>
 </body>
 </html>
