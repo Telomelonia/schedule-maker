@@ -1,18 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Schedule Results</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
-    <h1>Generated Schedules</h1>
-    {% for schedule in schedules %}
-        <h3>Schedule:</h3>
-        <ul>
-            {% for teacher, slot in schedule.items() %}
-                <li>{{ teacher }}: {{ slot }}</li>
+    <h1>Generated Schedule</h1>
+    {% if schedule %}
+        <table>
+            <tr>
+                <th>Time</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+                <th>Sunday</th>
+            </tr>
+            {% for hour in range(24) %}
+                <tr>
+                    <td>{{ '%02d:00' % hour }}</td>
+                    {% for day in range(7) %}
+                        <td>
+                            {% if schedule[day][hour] %}
+                                {{ schedule[day][hour] }}
+                            {% else %}
+                                Free
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
             {% endfor %}
-        </ul>
-    {% endfor %}
+        </table>
+    {% else %}
+        <p>No schedule available. Please check the inputs or try again.</p>
+    {% endif %}
     <a href="/">Back to form</a>
 </body>
 </html>
