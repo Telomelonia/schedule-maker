@@ -1,46 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Schedule Input</title>
-    <script>
-        function addTeacher() {
-            const container = document.getElementById("teacher-container");
-            const newTeacher = container.children[0].cloneNode(true);
-            newTeacher.querySelectorAll("input, select").forEach(input => input.selectedIndex = 0);
-            container.appendChild(newTeacher);
-        }
-    </script>
 </head>
 <body>
-    <h1>Teacher Schedule Input</h1>
+    <h1>Create Schedule</h1>
     <form method="post">
-        <div id="teacher-container">
+        <div id="teachers">
             <div class="teacher">
-                <label>Teacher Name:</label>
-                <input type="text" name="teacher[]"><br>
+                <label>Teacher:</label>
+                <input type="text" name="teacher[]">
+                <label>Free Time Slots (comma-separated, e.g., Mon-9, Tue-10):</label>
+                <input type="text" name="time_slots[]">
                 <label>Number of Classes:</label>
-                <input type="number" name="num_classes[]"><br>
-                {% for day in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] %}
-                <label>{{ day }}:</label>
-                <select name="{{ day }}_start[]">
-                    <option value="">-- Select Start Time --</option>
-                    {% for hour in range(0, 24) %}
-                    <option value="{{ '%02d:00' % hour }}">{{ '%02d:00' % hour }}</option>
-                    {% endfor %}
-                </select>
-                to
-                <select name="{{ day }}_end[]">
-                    <option value="">-- Select End Time --</option>
-                    {% for hour in range(1, 25) %}
-                    <option value="{{ '%02d:00' % hour if hour != 24 else '23:59' }}">{{ '%02d:00' % hour if hour != 24 else '23:59' }}</option>
-                    {% endfor %}
-                </select><br>
-                {% endfor %}
+                <input type="number" name="classes_count[]">
             </div>
         </div>
         <button type="button" onclick="addTeacher()">Add Another Teacher</button><br><br>
-        <button type="submit">Submit Schedule</button>
+        <button type="submit">Submit</button>
     </form>
+    <script>
+        function addTeacher() {
+            let container = document.getElementById("teachers");
+            let newTeacher = container.children[0].cloneNode(true);
+            newTeacher.querySelectorAll("input").forEach(input => input.value = "");
+            container.appendChild(newTeacher);
+        }
+    </script>
 </body>
 </html>
