@@ -1,4 +1,7 @@
 import optapy
+import optapy.config
+import optapy.types
+import java
 from optapy import constraint_provider, planning_entity, planning_id, planning_solution, planning_variable
 
 @planning_entity
@@ -69,13 +72,20 @@ def define_constraints(constraint_factory):
     ]
 
 def create_schedule(lectures_data, time_slots, rooms):
+    # Create instances of Lecture and Schedule
     lectures = [Lecture(l['id'], l['course'], l['teacher'], l['duration']) for l in lectures_data]
     problem = Schedule(lectures, time_slots, rooms)
-    
-    solver = optapy.solver_factory_create(Schedule) \
-        .with_entity_classes(Lecture) \
-        .with_constraint_provider(define_constraints) \
-        .buildSolver()
-    
+
+    # Define the solver configuration
+    solver_config = optapy.config.SolverConfig().withEntityClasses(Lecture) \
+        .withSolutionClass(Schedule) \
+        .withConstraintProvider(define_constraints) \
+        .withTerminationSpentLimit(java.time.Duration.ofSeconds(30))
+
+    # Build the solver using the SolverFactory
+    solver_factory = optapy.SolverFactory.create(solver_config)
+    solver = solver_factory.buildSolver()
+
+    # Solve the problem
     solution = solver.solve(problem)
     return solution.get_lectures()
