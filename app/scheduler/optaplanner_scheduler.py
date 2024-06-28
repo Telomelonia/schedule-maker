@@ -1,6 +1,5 @@
 import optapy
 from optapy import constraint_provider, planning_entity, planning_id, planning_solution, planning_variable
-from optapy.config import solver_config_create
 
 @planning_entity
 class Lecture:
@@ -73,12 +72,9 @@ def create_schedule(lectures_data, time_slots, rooms):
     lectures = [Lecture(l['id'], l['course'], l['teacher'], l['duration']) for l in lectures_data]
     problem = Schedule(lectures, time_slots, rooms)
     
-    # Create a solver config
-    solver_config = solver_config_create(solution_class=Schedule)
-    solver_config.withConstraintProviders(define_constraints)
-    solver_config.withEntityClasses(Lecture)
+    solver = optapy.solver_factory_create(Schedule) \
+        .with_constraint_provider(define_constraints) \
+        .buildSolver()
     
-    # Build and solve
-    solver = optapy.solver_factory_create(solver_config).buildSolver()
     solution = solver.solve(problem)
     return solution.get_lectures()
