@@ -1,14 +1,18 @@
 from flask import Blueprint, render_template, request
-from ..utils.scheduler_logic import create_schedule
+from app.scheduler.optaplanner_scheduler import create_schedule
 
 scheduler_bp = Blueprint('scheduler', __name__)
 
 @scheduler_bp.route('/', methods=['GET', 'POST'])
-def schedule():
+def index():
     if request.method == 'POST':
-        teachers = request.form.getlist('teacher[]')
-        time_slots = request.form.getlist('time_slots[]')
-        classes_count = request.form.getlist('classes_count[]')
-        schedules = create_schedule(teachers, time_slots, [int(count) for count in classes_count])
-        return render_template('result.html', schedules=schedules)
+        lectures = [
+            {"id": f"L{i}", "course": request.form[f'course_{i}'], "teacher": request.form[f'teacher_{i}'], "duration": int(request.form[f'duration_{i}'])}
+            for i in range(1, int(request.form['lecture_count']) + 1)
+        ]
+        rooms = request.form['rooms'].split(',')
+        time_slots = range(int(request.form['time_slots']))
+        
+        schedule = create_schedule(lectures, time_slots, rooms)
+        return render_template('result.html', schedule=schedule)
     return render_template('index.html')

@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Schedule Results</title>
+    <title>Class Schedule</title>
 </head>
 <body>
-    <h1>Generated Schedules</h1>
-    {% for schedule in schedules %}
-        <h3>Schedule:</h3>
-        <ul>
-            {% for teacher, slot in schedule.items() %}
-                <li>{{ teacher }}: {{ slot }}</li>
-            {% endfor %}
-        </ul>
-    {% endfor %}
-    <a href="/">Back to form</a>
+    <h1>Class Schedule</h1>
+    <table border="1">
+        <tr>
+            <th>Course</th>
+            <th>Teacher</th>
+            <th>Room</th>
+            <th>Time Slot</th>
+        </tr>
+        {% for lecture in schedule %}
+        <tr>
+            <td>{{ lecture.course }}</td>
+            <td>{{ lecture.teacher }}</td>
+            <td>{{ lecture.room }}</td>
+            <td>{{ lecture.time_slot }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/">Create Another Schedule</a>
 </body>
 </html>

@@ -1,31 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Schedule Input</title>
+    <title>Class Schedule Maker</title>
 </head>
 <body>
-    <h1>Create Schedule</h1>
-    <form method="post">
-        <div id="teachers">
-            <div class="teacher">
-                <label>Teacher:</label>
-                <input type="text" name="teacher[]">
-                <label>Free Time Slots (comma-separated, e.g., Mon-9, Tue-10):</label>
-                <input type="text" name="time_slots[]">
-                <label>Number of Classes:</label>
-                <input type="number" name="classes_count[]">
-            </div>
-        </div>
-        <button type="button" onclick="addTeacher()">Add Another Teacher</button><br><br>
-        <button type="submit">Submit</button>
+    <h1>Class Schedule Maker</h1>
+    <form method="POST">
+        <label for="lecture_count">Number of Lectures:</label>
+        <input type="number" id="lecture_count" name="lecture_count" min="1" required><br><br>
+        
+        <div id="lecture_inputs"></div>
+        
+        <label for="rooms">Rooms (comma-separated):</label>
+        <input type="text" id="rooms" name="rooms" required><br><br>
+        
+        <label for="time_slots">Number of Time Slots:</label>
+        <input type="number" id="time_slots" name="time_slots" min="1" required><br><br>
+        
+        <input type="submit" value="Create Schedule">
     </form>
+
     <script>
-        function addTeacher() {
-            let container = document.getElementById("teachers");
-            let newTeacher = container.children[0].cloneNode(true);
-            newTeacher.querySelectorAll("input").forEach(input => input.value = "");
-            container.appendChild(newTeacher);
-        }
+        document.getElementById('lecture_count').addEventListener('change', function() {
+            var count = this.value;
+            var container = document.getElementById('lecture_inputs');
+            container.innerHTML = '';
+            for (var i = 1; i <= count; i++) {
+                container.innerHTML += `
+                    <h3>Lecture ${i}</h3>
+                    <label for="course_${i}">Course:</label>
+                    <input type="text" id="course_${i}" name="course_${i}" required><br>
+                    <label for="teacher_${i}">Teacher:</label>
+                    <input type="text" id="teacher_${i}" name="teacher_${i}" required><br>
+                    <label for="duration_${i}">Duration:</label>
+                    <input type="number" id="duration_${i}" name="duration_${i}" min="1" required><br><br>
+                `;
+            }
+        });
     </script>
 </body>
 </html>
