@@ -1,42 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Class Schedule Maker</title>
+    <title>Generate Problem</title>
 </head>
 <body>
-    <h1>Class Schedule Maker</h1>
-    <form method="POST">
-        <label for="lecture_count">Number of Lectures:</label>
-        <input type="number" id="lecture_count" name="lecture_count" min="1" required><br><br>
-        
-        <div id="lecture_inputs"></div>
-        
-        <label for="rooms">Rooms (comma-separated):</label>
-        <input type="text" id="rooms" name="rooms" required><br><br>
-        
-        <label for="time_slots">Number of Time Slots:</label>
-        <input type="number" id="time_slots" name="time_slots" min="1" required><br><br>
-        
-        <input type="submit" value="Create Schedule">
+    <h1>Generate Problem</h1>
+    <form id="generate-form">
+        <!-- Add input fields for timeslots, rooms, and lessons -->
+        <label>Timeslots:</label>
+        <textarea id="timeslots" rows="10" cols="50"></textarea><br>
+
+        <label>Rooms:</label>
+        <textarea id="rooms" rows="5" cols="50"></textarea><br>
+
+        <label>Lessons:</label>
+        <textarea id="lessons" rows="10" cols="50"></textarea><br>
+
+        <button type="button" onclick="generateProblem()">Generate</button>
     </form>
 
+    <div id="result"></div>
+
     <script>
-        document.getElementById('lecture_count').addEventListener('change', function() {
-            var count = this.value;
-            var container = document.getElementById('lecture_inputs');
-            container.innerHTML = '';
-            for (var i = 1; i <= count; i++) {
-                container.innerHTML += `
-                    <h3>Lecture ${i}</h3>
-                    <label for="course_${i}">Course:</label>
-                    <input type="text" id="course_${i}" name="course_${i}" required><br>
-                    <label for="teacher_${i}">Teacher:</label>
-                    <input type="text" id="teacher_${i}" name="teacher_${i}" required><br>
-                    <label for="duration_${i}">Duration:</label>
-                    <input type="number" id="duration_${i}" name="duration_${i}" min="1" required><br><br>
-                `;
-            }
-        });
+        function generateProblem() {
+            const timeslots = JSON.parse(document.getElementById('timeslots').value);
+            const rooms = JSON.parse(document.getElementById('rooms').value);
+            const lessons = JSON.parse(document.getElementById('lessons').value);
+
+            fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    timeslots: timeslots,
+                    rooms: rooms,
+                    lessons: lessons
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
     </script>
 </body>
 </html>
