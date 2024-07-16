@@ -1,51 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Generate Problem</title>
+    <meta charset="UTF-8">
+    <title>Timetable</title>
 </head>
 <body>
-    <h1>Generate Problem</h1>
-    <form id="generate-form">
-        <!-- Add input fields for timeslots, rooms, and lessons -->
-        <label>Timeslots:</label>
-        <textarea id="timeslots" rows="10" cols="50"></textarea><br>
-
-        <label>Rooms:</label>
-        <textarea id="rooms" rows="5" cols="50"></textarea><br>
-
-        <label>Lessons:</label>
-        <textarea id="lessons" rows="10" cols="50"></textarea><br>
-
-        <button type="button" onclick="generateProblem()">Generate</button>
-    </form>
-
-    <div id="result"></div>
-
-    <script>
-        function generateProblem() {
-            const timeslots = JSON.parse(document.getElementById('timeslots').value);
-            const rooms = JSON.parse(document.getElementById('rooms').value);
-            const lessons = JSON.parse(document.getElementById('lessons').value);
-
-            fetch('/generate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    timeslots: timeslots,
-                    rooms: rooms,
-                    lessons: lessons
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').innerText = data.message;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-    </script>
+    <h1>Timetable</h1>
+    <table border="1">
+        <tr>
+            <th>Subject</th>
+            <th>Teacher</th>
+            <th>Student Group</th>
+            <th>Timeslot</th>
+            <th>Room</th>
+        </tr>
+        {% for lesson in timetable.lesson_list %}
+        <tr>
+            <td>{{ lesson.subject }}</td>
+            <td>{{ lesson.teacher }}</td>
+            <td>{{ lesson.student_group }}</td>
+            <td>{{ lesson.timeslot.start_time }} - {{ lesson.timeslot.end_time }}</td>
+            <td>{{ lesson.room.name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
