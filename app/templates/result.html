@@ -1,26 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Class Schedule</title>
+    <meta charset="UTF-8">
+    <title>Generated Problem</title>
 </head>
 <body>
-    <h1>Class Schedule</h1>
-    <table border="1">
-        <tr>
-            <th>Course</th>
-            <th>Teacher</th>
-            <th>Room</th>
-            <th>Time Slot</th>
-        </tr>
-        {% for lecture in schedule %}
-        <tr>
-            <td>{{ lecture.course }}</td>
-            <td>{{ lecture.teacher }}</td>
-            <td>{{ lecture.room }}</td>
-            <td>{{ lecture.time_slot }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    <a href="/">Create Another Schedule</a>
+    <h1>Generated Problem</h1>
+    <h2>Timeslot</h2>
+    <p>Day: {{ timetable.timeslot_list[0].day }}</p>
+    <p>Start Time: {{ timetable.timeslot_list[0].start_time }}</p>
+    <p>End Time: {{ timetable.timeslot_list[0].end_time }}</p>
+
+    <h2>Room</h2>
+    <p>Name: {{ timetable.room_list[0].name }}</p>
+
+    <h2>Lesson</h2>
+    <p>Subject: {{ timetable.lesson_list[0].subject }}</p>
+    <p>Teacher: {{ timetable.lesson_list[0].teacher }}</p>
+    <p>Grade: {{ timetable.lesson_list[0].grade }}</p>
 </body>
 </html>

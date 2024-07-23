@@ -2,27 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Timetable</title>
+    <title>Generate Problem</title>
 </head>
 <body>
-    <h1>Timetable</h1>
-    <table border="1">
-        <tr>
-            <th>Subject</th>
-            <th>Teacher</th>
-            <th>Student Group</th>
-            <th>Timeslot</th>
-            <th>Room</th>
-        </tr>
-        {% for lesson in timetable.lesson_list %}
-        <tr>
-            <td>{{ lesson.subject }}</td>
-            <td>{{ lesson.teacher }}</td>
-            <td>{{ lesson.student_group }}</td>
-            <td>{{ lesson.timeslot.start_time }} - {{ lesson.timeslot.end_time }}</td>
-            <td>{{ lesson.room.name }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <h1>Enter Timeslot, Room, and Lesson Details</h1>
+    <form action="/generate" method="post">
+        <h2>Timeslots</h2>
+        <label for="timeslot_day">Day:</label>
+        <input type="text" id="timeslot_day" name="timeslot_day"><br>
+        <label for="timeslot_start">Start Time (HH:MM):</label>
+        <input type="text" id="timeslot_start" name="timeslot_start"><br>
+        <label for="timeslot_end">End Time (HH:MM):</label>
+        <input type="text" id="timeslot_end" name="timeslot_end"><br>
+
+        <h2>Rooms</h2>
+        <label for="room_name">Room Name:</label>
+        <input type="text" id="room_name" name="room_name"><br>
+
+        <h2>Lessons</h2>
+        <label for="lesson_subject">Subject:</label>
+        <input type="text" id="lesson_subject" name="lesson_subject"><br>
+        <label for="lesson_teacher">Teacher:</label>
+        <input type="text" id="lesson_teacher" name="lesson_teacher"><br>
+        <label for="lesson_grade">Grade:</label>
+        <input type="text" id="lesson_grade" name="lesson_grade"><br>
+
+        <button type="submit">Generate Problem</button>
+    </form>
 </body>
 </html>

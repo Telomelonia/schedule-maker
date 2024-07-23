@@ -331,9 +331,9 @@ def on_best_solution_changed(best_solution):
         for lesson in unassigned_lessons:
             print(lesson)
 
-def print_lesson(lesson):
-    print(f"Lesson ID: {lesson.id}, Subject: {lesson.subject}, Teacher: {lesson.teacher}, "
-          f"Student Group: {lesson.student_group}, Timeslot: {lesson.timeslot}, Room: {lesson.room}")
+# def print_lesson(lesson):
+#     print(f"Lesson ID: {lesson.id}, Subject: {lesson.subject}, Teacher: {lesson.teacher}, "
+#           f"Student Group: {lesson.student_group}, Timeslot: {lesson.timeslot}, Room: {lesson.room}")
 
 def update_lesson_in_table(lesson, clear_cell_set):
     global cell_map
