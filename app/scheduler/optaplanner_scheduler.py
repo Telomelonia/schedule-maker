@@ -285,8 +285,8 @@ def generate_problem():
 
 from optapy import solver_manager_create
 from optapy.types import SolverConfig, Duration
-from ipywidgets import Tab
-from ipysheet import sheet, cell, row, column, cell_range
+# from ipywidgets import Tab
+# from ipysheet import sheet, cell, row, column, cell_range
 
 solver_config = SolverConfig().withEntityClasses(Lesson) \
     .withSolutionClass(TimeTable) \
@@ -314,30 +314,26 @@ def pick_color(subject):
     return color_map.get(subject, 'gray')
 
 def on_best_solution_changed(best_solution):
-    global timetable
     global solution
-    global cell_map
     solution = best_solution
+    print("Best Solution Updated:")
+    print(solution)
+
     unassigned_lessons = []
-    clear_cell_set = set()
-    
-    for (table_name, table_map) in cell_map.items():
-        for (key, cell) in table_map.items():
-            clear_cell_set.add(cell)
-            
     for lesson in solution.lesson_list:
         if lesson.timeslot is None or lesson.room is None:
-            unassigned_lessons.append(lesson, clear_cell_set)
+            unassigned_lessons.append(lesson)
         else:
-            update_lesson_in_table(lesson, clear_cell_set)
-            
-    for cell in clear_cell_set:
-            cell.value = ""
-            cell.style["backgroundColor"] = "white"
-            
-    for (table_name, table_map) in cell_map.items():
-        for (key, cell) in table_map.items():
-            cell.send_state()
+            print_lesson(lesson)
+    
+    if unassigned_lessons:
+        print("Unassigned Lessons:")
+        for lesson in unassigned_lessons:
+            print(lesson)
+
+def print_lesson(lesson):
+    print(f"Lesson ID: {lesson.id}, Subject: {lesson.subject}, Teacher: {lesson.teacher}, "
+          f"Student Group: {lesson.student_group}, Timeslot: {lesson.timeslot}, Room: {lesson.room}")
 
 def update_lesson_in_table(lesson, clear_cell_set):
     global cell_map
@@ -369,38 +365,18 @@ def update_lesson_in_table(lesson, clear_cell_set):
     student_group_cell.send_state()
 
     
-def create_table(table_name, solution, columns, name_map):
-    global cell_map
-    out = sheet(rows=len(solution.timeslot_list) + 1, columns=len(columns) + 1)
-    header_color = "#22222222"
-    cell(0,0, read_only=True, background_color=header_color)
-    header_row = row(0, list(map(name_map, columns)), column_start=1, read_only=True,
-                    background_color=header_color)
-    timeslot_column = column(0,
-            list(map(lambda timeslot: timeslot.day_of_week[0:3] + " " + str(timeslot.start_time)[0:10],
-                             solution.timeslot_list)), row_start=1, read_only=True, background_color=header_color)
-
-    table_cells = dict()
-    cell_map[table_name] = table_cells
-    for x in range(len(solution.timeslot_list)):
-        for y in range(len(columns)):
-            table_cells[(x, y)] = cell(x + 1, y + 1, "", read_only=True)
-    return out
-        
 solver_manager = solver_manager_create(solver_config)
-
-by_room_table = create_table('room', solution, solution.room_list, lambda room: room.name)
-by_teacher_table = create_table('teacher', solution, solution.teacher_list, lambda teacher: teacher)
-by_student_group_table = create_table('student_group', solution, solution.student_group_list,
-                                      lambda student_group: student_group)
-
 solver_manager.solveAndListen(0, lambda the_id: solution, on_best_solution_changed)
 
-tab = Tab()
-tab.children = [by_room_table, by_teacher_table, by_student_group_table]
+# tab = Tab()
+# tab.children = [by_room_table, by_teacher_table, by_student_group_table]
 
-tab.set_title(0, 'By Room')
-tab.set_title(1, 'By Teacher')
-tab.set_title(2, 'By Student Group')
+# tab.set_title(0, 'By Room')
+# tab.set_title(1, 'By Teacher')
+# tab.set_title(2, 'By Student Group')
 
-tab
+# tab
+if __name__ == "__main__":
+    solution = generate_problem()
+    solution.set_student_group_and_teacher_list()
+    solver_manager.solveAndListen(0, lambda the_id: solution, on_best_solution_changed)
