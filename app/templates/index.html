@@ -1,33 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Generate Problem</title>
+    <title>Data Entry</title>
 </head>
 <body>
-    <h1>Enter Timeslot, Room, and Lesson Details</h1>
-    <form action="/generate" method="post">
+    <h1>Enter Timeslots and Rooms</h1>
+    <form action="{{ url_for('submit') }}" method="post">
         <h2>Timeslots</h2>
-        <label for="timeslot_day">Day:</label>
-        <input type="text" id="timeslot_day" name="timeslot_day"><br>
-        <label for="timeslot_start">Start Time (HH:MM):</label>
-        <input type="text" id="timeslot_start" name="timeslot_start"><br>
-        <label for="timeslot_end">End Time (HH:MM):</label>
-        <input type="text" id="timeslot_end" name="timeslot_end"><br>
-
+        <div id="timeslots">
+            <div>
+                <input type="text" name="timeslot" placeholder="id,day,start_hour,start_minute,end_hour,end_minute">
+            </div>
+        </div>
+        <button type="button" onclick="addTimeslot()">Add Timeslot</button>
+        
         <h2>Rooms</h2>
-        <label for="room_name">Room Name:</label>
-        <input type="text" id="room_name" name="room_name"><br>
-
-        <h2>Lessons</h2>
-        <label for="lesson_subject">Subject:</label>
-        <input type="text" id="lesson_subject" name="lesson_subject"><br>
-        <label for="lesson_teacher">Teacher:</label>
-        <input type="text" id="lesson_teacher" name="lesson_teacher"><br>
-        <label for="lesson_grade">Grade:</label>
-        <input type="text" id="lesson_grade" name="lesson_grade"><br>
-
-        <button type="submit">Generate Problem</button>
+        <div id="rooms">
+            <div>
+                <input type="text" name="room" placeholder="id,name">
+            </div>
+        </div>
+        <button type="button" onclick="addRoom()">Add Room</button>
+        
+        <h2>Lesson</h2>
+        <div id="lessons">
+            <div>
+                <input type="text" name="lesson" placeholder="id,subject,teacher,room,timeslot">
+            </div>
+        </div>
+        <button type="button" onclick="addLesson()">Add Lesson</button>
+        <input type="submit" value="Submit">
     </form>
+
+    <script>
+        function addTimeslot() {
+            var div = document.createElement('div');
+            div.innerHTML = '<input type="text" name="timeslot" placeholder="id,day,start_hour,start_minute,end_hour,end_minute">';
+            document.getElementById('timeslots').appendChild(div);
+        }
+
+        function addRoom() {
+            var div = document.createElement('div');
+            div.innerHTML = '<input type="text" name="room" placeholder="id,name">';
+            document.getElementById('rooms').appendChild(div);
+        }
+        function addLesson() {
+            var div = document.createElement('div');
+            div.innerHTML = '<input type="text" name="lesson" placeholder="id,subject,teacher,room,timeslot">';
+            document.getElementById('lessons').appendChild(div);
+        }
+    </script>
 </body>
 </html>

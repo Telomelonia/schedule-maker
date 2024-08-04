@@ -1,6 +1,6 @@
-from flask import render_template, request, Blueprint
+from flask import render_template, request, Blueprint, redirect, url_for
 from datetime import time
-from app.scheduler.optaplanner_scheduler import Timeslot, Room, Lesson, TimeTable
+from app.scheduler.optaplanner_scheduler import generate_problem, Timeslot, Room, Lesson
 
 main = Blueprint('main', __name__)
 
@@ -8,33 +8,20 @@ main = Blueprint('main', __name__)
 def index():
     return render_template('index.html')
 
-@main.route('/generate', methods=['POST'])
-def generate():
-    timeslot_day = request.form['timeslot_day']
-    timeslot_start = request.form['timeslot_start']
-    timeslot_end = request.form['timeslot_end']
-    room_name = request.form['room_name']
-    lesson_subject = request.form['lesson_subject']
-    lesson_teacher = request.form['lesson_teacher']
-    lesson_grade = request.form['lesson_grade']
-
-    # Parse timeslot start and end times
-    start_hour, start_minute = map(int, timeslot_start.split(':'))
-    end_hour, end_minute = map(int, timeslot_end.split(':'))
-
-    # Create Timeslot, Room, and Lesson objects
-    timeslot = Timeslot(1, timeslot_day, time(start_hour, start_minute), time(end_hour, end_minute))
-    room = Room(1, room_name)
-    lesson = Lesson(1, lesson_subject, lesson_teacher, lesson_grade)
-
-    # Set Timeslot and Room for the Lesson
-    lesson.set_timeslot(timeslot)
-    lesson.set_room(room)
-
-    # Create lists and TimeTable object
-    timeslot_list = [timeslot]
-    room_list = [room]
-    lesson_list = [lesson]
-    timetable = TimeTable(timeslot_list, room_list, lesson_list)
-
-    return render_template('result.html', timetable=timetable)
+@main.route('/submit', methods=['POST'])
+def submit():
+    timeslot_list = request.form.getlist('timeslot')
+    room_list = request.form.getlist('room')
+    lesson_list = request.form.getlist('lesson')
+    # Convert timeslot_list and room_list to appropriate format
+    timeslot_objects = []
+    for timeslot in timeslot_list:
+        id, day, start_hour, start_minute, end_hour, end_minute = timeslot.split(',')
+        timeslot_objects.append(Timeslot(int(id), day, time(hour=int(start_hour), minute=int(start_minute)), time(hour=int(end_hour), minute=int(end_minute))))
+    room_objects = [Room(int(id), name) for id, name in (room.split(',') for room in room_list)]
+    lesson_objects = []
+    for lesson in lesson_list:
+        id, subject, teacher, student_group = lesson.split(',')
+        lesson_objects.append(Lesson(int(id), subject, teacher, student_group))
+    generate_problem(timeslot_objects, room_objects, lesson_objects)
+    return redirect(url_for('index'))
