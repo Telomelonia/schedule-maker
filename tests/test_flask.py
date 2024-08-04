@@ -1,28 +1,23 @@
-import requests
+import unittest
+from app import app
 
-# Define the URL
-url = "http://localhost:5000/"
+class FlaskTestCase(unittest.TestCase):
+    def setUp(self):
+        self.app = app.test_client()
+        self.app.testing = True
 
-# Create the form data
-data = {
-    'lecture_count': '2',
-    'course_1': 'Mathematics',
-    'teacher_1': 'John Doe',
-    'duration_1': '2',
-    'course_2': 'Physics',
-    'teacher_2': 'Jane Doe',
-    'duration_2': '3',
-    'rooms': 'Room101,Room102',
-    'time_slots': '5'
-}
+    def test_index(self):
+        response = self.app.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Enter Timeslots and Rooms', response.data)
 
-# Send POST request
-response = requests.post(url, data=data)
+    def test_submit(self):
+        response = self.app.post('/submit', data={
+            'timeslot': ['1,MONDAY,8,30,9,30', '2,MONDAY,9,30,10,30'],
+            'room': ['1,Room A', '2,Room B'],
+            'lesson': ['1,Math,Mr. Smith,1,1', '2,Science,Ms. Johnson,2,2']
+        })
+        self.assertEqual(response.status_code, 302)  # Expecting a redirect
 
-# Check response for errors
-if response.status_code != 200:
-    # Get the last 500 characters of the response text
-    error_snippet = response.text[-500:]
-    print(f"ERROR: Status code {response.status_code}\nResponse snippet:\n{error_snippet}")
-else:
-    print("Request was successful!")
+if __name__ == '__main__':
+    unittest.main()
