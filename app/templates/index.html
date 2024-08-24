@@ -2,27 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Timetable</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule Maker</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Timetable</h1>
-    <table border="1">
-        <tr>
-            <th>Subject</th>
-            <th>Teacher</th>
-            <th>Student Group</th>
-            <th>Timeslot</th>
-            <th>Room</th>
-        </tr>
-        {% for lesson in timetable.lesson_list %}
-        <tr>
-            <td>{{ lesson.subject }}</td>
-            <td>{{ lesson.teacher }}</td>
-            <td>{{ lesson.student_group }}</td>
-            <td>{{ lesson.timeslot.start_time }} - {{ lesson.timeslot.end_time }}</td>
-            <td>{{ lesson.room.name }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <h1>Class Schedule Maker</h1>
+    <form method="POST">
+        <h2>Timeslots</h2>
+        <button type="button" id="add_timeslot">Add Timeslot</button>
+        <div id="timeslots"></div>
+
+        <h2>Rooms</h2>
+        <button type="button" id="add_room">Add Room</button>
+        <div id="rooms"></div>
+
+        <h2>Lessons</h2>
+        <button type="button" id="add_lesson">Add Lesson</button>
+        <div id="lessons"></div>
+
+        <h2>Time per Lesson (minutes)</h2>
+        <input type="number" name="time_per_lesson" required>
+
+        <br><br>
+        <input type="submit" value="Create Schedule">
+    </form>
+
+    <script>
+        let timeslotCount = 0;
+        let roomCount = 0;
+        let lessonCount = 0;
+
+        $('#add_timeslot').click(function() {
+            timeslotCount++;
+            $('#timeslots').append(`
+                <div>
+                    <input type="hidden" name="timeslot_count" value="${timeslotCount}">
+                    <label>Weekday: <input type="text" name="weekday_${timeslotCount - 1}" required></label>
+                    <label>Start Time: <input type="time" name="start_time_${timeslotCount - 1}" required></label>
+                    <label>End Time: <input type="time" name="end_time_${timeslotCount - 1}" required></label>
+                </div>
+            `);
+        });
+
+        $('#add_room').click(function() {
+            roomCount++;
+            $('#rooms').append(`
+                <div>
+                    <input type="hidden" name="room_count" value="${roomCount}">
+                    <label>Room Name: <input type="text" name="room_name_${roomCount - 1}" required></label>
+                </div>
+            `);
+        });
+
+        $('#add_lesson').click(function() {
+            lessonCount++;
+            $('#lessons').append(`
+                <div>
+                    <input type="hidden" name="lesson_count" value="${lessonCount}">
+                    <label>Subject: <input type="text" name="subject_${lessonCount - 1}" required></label>
+                    <label>Teacher: <input type="text" name="teacher_${lessonCount - 1}" required></label>
+                    <label>Group/Class: <input type="text" name="group_${lessonCount - 1}" required></label>
+                </div>
+            `);
+        });
+    </script>
 </body>
 </html>
