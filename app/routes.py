@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from datetime import datetime
-
+from app.scheduler.problem import generate_problem
 main = Blueprint('main', __name__)
 
 @main.route('/', methods=['GET', 'POST'])
@@ -9,7 +9,6 @@ def index():
         timeslots = []
         for i in range(int(request.form['timeslot_count'])):
             timeslots.append({
-                'sr': i + 1,
                 'weekday': request.form[f'weekday_{i}'],
                 'start_time': request.form[f'start_time_{i}'],
                 'end_time': request.form[f'end_time_{i}']
@@ -18,14 +17,12 @@ def index():
         rooms = []
         for i in range(int(request.form['room_count'])):
             rooms.append({
-                'sr': i + 1,
                 'name': request.form[f'room_name_{i}']
             })
 
         lessons = []
         for i in range(int(request.form['lesson_count'])):
             lessons.append({
-                'sr': i + 1,
                 'subject': request.form[f'subject_{i}'],
                 'teacher': request.form[f'teacher_{i}'],
                 'group': request.form[f'group_{i}']
@@ -45,7 +42,6 @@ def index():
             session['timeslots'] = timeslots
             session['rooms'] = rooms
             session['lessons'] = lessons
-            session['time_per_lesson'] = time_per_lesson
             
             # Redirect to a new route for processing
             return redirect(url_for('main.getdata'))
@@ -53,7 +49,13 @@ def index():
             return "Error: Not enough time slots for all lessons!"
 
     return render_template('index.html')
-
+@main.route('/schedule')
+def solution():
+    timeslots_data = session.get('timeslots', [])
+    rooms_data = session.get('rooms', [])
+    lessons_data = session.get('lessons', [])
+    solution = generate_problem(timeslots_data, rooms_data, lessons_data)
+    return solution
 @main.route('/getdata')
 def getdata():
     timeslots = session.get('timeslots', [])
