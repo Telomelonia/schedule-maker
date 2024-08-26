@@ -51,11 +51,23 @@ def index():
     return render_template('index.html')
 @main.route('/schedule')
 def solution():
+    """
+    This gives me the generate_problem as solution
+    It takes from user
+    """
     timeslots_data = session.get('timeslots', [])
     rooms_data = session.get('rooms', [])
     lessons_data = session.get('lessons', [])
     solution = generate_problem(timeslots_data, rooms_data, lessons_data)
     return solution
+def schedule():
+    """
+    This calls optaplanner_scheduler file to get
+    the schedule
+    """
+    solution = solution()
+    
+    return render_template('schedule.html')
 @main.route('/getdata')
 def getdata():
     timeslots = session.get('timeslots', [])

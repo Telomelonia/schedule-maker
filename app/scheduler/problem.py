@@ -1,6 +1,5 @@
 from app.scheduler.optaplanner_scheduler import Timeslot, Room, Lesson, TimeTable
-import datetime
-from datetime import time
+from datetime import datetime, time
 
 def generate_problem(timeslots_data, rooms_data, lessons_data):
     # Convert user-entered timeslots to Timeslot objects

@@ -334,7 +334,7 @@ def on_best_solution_changed(best_solution):
 def print_lesson(lesson):
     print(f"Lesson ID: {lesson.id}, Subject: {lesson.subject}, Teacher: {lesson.teacher}, "
           f"Student Group: {lesson.student_group}, Timeslot: {lesson.timeslot}, Room: {lesson.room}")
-
+    # print(cell_map, end = '--------------')
 def update_lesson_in_table(lesson, clear_cell_set):
     global cell_map
     x = solution.timeslot_list.index(lesson.timeslot)
@@ -342,7 +342,6 @@ def update_lesson_in_table(lesson, clear_cell_set):
     teacher_column = solution.teacher_list.index(lesson.teacher)
     student_group_column = solution.student_group_list.index(lesson.student_group)
     color = pick_color(lesson.subject)
-
 
     room_cell = cell_map['room'][(x, room_column)]
     teacher_cell = cell_map['teacher'][(x, teacher_column)]
@@ -380,3 +379,4 @@ if __name__ == "__main__":
     solution = generate_problem()
     solution.set_student_group_and_teacher_list()
     solver_manager.solveAndListen(0, lambda the_id: solution, on_best_solution_changed)
+    # print("Result",cell_map)
