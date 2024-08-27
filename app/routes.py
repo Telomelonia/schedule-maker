@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from app.scheduler.solver import format_lesson_for_template,solution,solver_manager,on_best_solution_changed
+from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from datetime import datetime
-from app.scheduler.problem import generate_problem
-main = Blueprint('main', __name__)
 
+
+main = Blueprint('main', __name__)
 @main.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -49,25 +50,26 @@ def index():
             return "Error: Not enough time slots for all lessons!"
 
     return render_template('index.html')
+
 @main.route('/schedule')
-def solution():
-    """
-    This gives me the generate_problem as solution
-    It takes from user
-    """
-    timeslots_data = session.get('timeslots', [])
-    rooms_data = session.get('rooms', [])
-    lessons_data = session.get('lessons', [])
-    solution = generate_problem(timeslots_data, rooms_data, lessons_data)
-    return solution
 def schedule():
-    """
-    This calls optaplanner_scheduler file to get
-    the schedule
-    """
-    solution = solution()
-    
-    return render_template('schedule.html')
+    formatted_lessons = [format_lesson_for_template(lesson) for lesson in solution.lesson_list]
+    return render_template('schedule.html', lessons=formatted_lessons, 
+                           timeslots=solution.timeslot_list, 
+                           rooms=solution.room_list, 
+                           teachers=solution.teacher_list, 
+                           student_groups=solution.student_group_list)
+
+@main.route('/solve', methods=['POST'])
+def solve():
+    solver_manager.solveAndListen(0, lambda the_id: solution, on_best_solution_changed)
+    return jsonify({'status': 'Solving started'})
+
+@main.route('/solution')
+def get_solution():
+    formatted_lessons = [format_lesson_for_template(lesson) for lesson in solution.lesson_list]
+    return jsonify(formatted_lessons)
+
 @main.route('/getdata')
 def getdata():
     timeslots = session.get('timeslots', [])

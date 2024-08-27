@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>School Schedule</title>
+    <style>
+        table { border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1>School Schedule</h1>
+    
+    <h2>By Room</h2>
+    {% for room in rooms %}
+    <h3>{{ room.name }}</h3>
+    <table>
+        <tr>
+            <th>Time</th>
+            {% for day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] %}
+            <th>{{ day }}</th>
+            {% endfor %}
+        </tr>
+        {% for timeslot in timeslots %}
+        <tr>
+            <td>{{ timeslot.start_time }}</td>
+            {% for day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] %}
+            <td>
+                {% for lesson in lessons if lesson.room == room.name and lesson.timeslot.startswith(day) %}
+                <div style="background-color: {{ lesson.color }}">
+                    {{ lesson.subject }}<br>
+                    {{ lesson.teacher }}<br>
+                    {{ lesson.student_group }}
+                </div>
+                {% endfor %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    {% endfor %}
+
+    <!-- Similar tables for By Teacher and By Student Group -->
+
+    <button onclick="startSolving()">Start Solving</button>
+
+    <script>
+    function startSolving() {
+        fetch('/solve', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                updateSolution();
+            });
+    }
+
+    function updateSolution() {
+        fetch('/solution')
+            .then(response => response.json())
+            .then(data => {
+                // Update the tables with the new solution
+                // This will require some JavaScript to manipulate the DOM
+            });
+    }
+    </script>
+</body>
+</html>
