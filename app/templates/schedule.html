@@ -25,12 +25,14 @@
             <td>{{ timeslot.start_time }}</td>
             {% for day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] %}
             <td>
-                {% for lesson in lessons if lesson.room == room.name and lesson.timeslot.startswith(day) %}
-                <div style="background-color: {{ lesson.color }}">
-                    {{ lesson.subject }}<br>
-                    {{ lesson.teacher }}<br>
-                    {{ lesson.student_group }}
-                </div>
+                {% for lesson in lessons %}
+                    {% if lesson.room == room.name and lesson.timeslot.startswith(day) %}
+                        <div class="lesson lesson-{{ lesson.subject|lower }}">
+                            {{ lesson.subject }}<br>
+                            {{ lesson.teacher }}<br>
+                            {{ lesson.student_group }}
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </td>
             {% endfor %}
