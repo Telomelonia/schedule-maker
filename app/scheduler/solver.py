@@ -1,6 +1,6 @@
-from app.scheduler.optaplanner_scheduler import Duration, Lesson, TimeTable, define_constraints
+from optaplanner_scheduler import Lesson, TimeTable, define_constraints
 from optapy import solver_manager_create
-from optapy.types import SolverConfig
+from optapy.types import SolverConfig, Duration
 from flask import session
 from app.scheduler.problem import generate_problem
 #solver
@@ -43,5 +43,4 @@ def format_lesson_for_template(lesson):
         'timeslot': f"{lesson.timeslot.day_of_week[0:3]} {lesson.timeslot.start_time}" if lesson.timeslot else None,
         'color': pick_color(lesson.subject)
     }
-
-
+solver_manager.solveAndListen(0, lambda the_id: solution, on_best_solution_changed)

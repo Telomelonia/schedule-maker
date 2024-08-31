@@ -1,4 +1,4 @@
-from app.scheduler.solver import format_lesson_for_template,solution,solver_manager,on_best_solution_changed
+from app.scheduler.solver import format_lesson_for_template,solution
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from datetime import datetime
 
@@ -62,7 +62,6 @@ def schedule():
 
 @main.route('/solve', methods=['POST'])
 def solve():
-    solver_manager.solveAndListen(0, lambda the_id: solution, on_best_solution_changed)
     return jsonify({'status': 'Solving started'})
 
 @main.route('/solution')
