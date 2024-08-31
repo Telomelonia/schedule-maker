@@ -115,6 +115,9 @@ def getdata():
     lessons = session.get('lessons', [])
     return render_template('getdata.html',timeslots=timeslots, rooms=rooms, lessons=lessons)
 
+@main.route('/show')
+def show():
+    return render_template('show.html')
 # @main.route('/process_schedule')
 # def process_schedule():
 #     # Retrieve the data from the session
