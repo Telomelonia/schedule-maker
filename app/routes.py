@@ -1,7 +1,20 @@
-from app.scheduler.solver import format_lesson_for_template,solution
+from app.scheduler.solver import start_solver, get_current_solution, get_formatted_lessons, is_solver_running
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from datetime import datetime
 
+def pick_color(subject):
+    color_map = {
+        'Math': 'blue',
+        'Physics': 'green',
+        'Chemistry': 'red',
+        'Spanish': 'yellow',
+        'French': 'orange',
+        'English': 'lime',
+        'Biology': 'brown',
+        'History': 'pink',
+        'Geography':'cyan'
+    }
+    return color_map.get(subject, 'gray')
 
 main = Blueprint('main', __name__)
 @main.route('/', methods=['GET', 'POST'])
@@ -51,23 +64,34 @@ def index():
 
     return render_template('index.html')
 
-@main.route('/schedule')
-def schedule():
-    formatted_lessons = [format_lesson_for_template(lesson) for lesson in solution.lesson_list]
-    return render_template('schedule.html', lessons=formatted_lessons, 
-                           timeslots=solution.timeslot_list, 
-                           rooms=solution.room_list, 
-                           teachers=solution.teacher_list, 
-                           student_groups=solution.student_group_list)
+@main.route('/error')
+def error():
+    return render_template('error.html')
+@main.route('/solver_status')
+def solver_status():
+    return jsonify({
+        "is_running": is_solver_running(),
+        "has_solution": get_current_solution() is not None
+    })
 
-@main.route('/solve', methods=['POST'])
-def solve():
-    return jsonify({'status': 'Solving started'})
-
-@main.route('/solution')
-def get_solution():
-    formatted_lessons = [format_lesson_for_template(lesson) for lesson in solution.lesson_list]
-    return jsonify(formatted_lessons)
+@main.route('/get_solution')
+def display_solution():
+    solution = get_current_solution()
+    if not solution:
+        return jsonify({"error": "No solution available. Please start the solver first."})
+    
+    formatted_lessons = get_formatted_lessons(solution)
+    
+    subject_colors = {lesson['subject']: lesson['color'] for lesson in formatted_lessons}
+    
+    return jsonify({
+        "lessons": formatted_lessons,
+        "rooms": [room.name for room in solution.room_list],
+        "teachers": solution.teacher_list,
+        "student_groups": solution.student_group_list,
+        "timeslots": [str(timeslot) for timeslot in solution.timeslot_list],
+        "subject_colors": subject_colors
+    })
 
 @main.route('/getdata')
 def getdata():

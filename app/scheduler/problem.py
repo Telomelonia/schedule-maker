@@ -1,7 +1,7 @@
 from app.scheduler.optaplanner_scheduler import Timeslot, Room, Lesson, TimeTable
 from datetime import datetime, time
-
-def generate_problem(timeslots_data, rooms_data, lessons_data):
+def generate_problem():
+# def generate_problem(timeslots_data, rooms_data, lessons_data):
     # # Convert user-entered timeslots to Timeslot objects
     # timeslot_list = []
     # for i, timeslot in enumerate(timeslots_data):
