@@ -1,8 +1,13 @@
 import threading
+import logging
 from app.scheduler.optaplanner_scheduler import Lesson, TimeTable, define_constraints
 from optapy import solver_manager_create
 from optapy.types import SolverConfig, Duration
 from app.scheduler.problem import generate_problem
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 #solver config
 solver_config = SolverConfig().withEntityClasses(Lesson) \
     .withSolutionClass(TimeTable) \
@@ -49,18 +54,26 @@ def format_lesson_for_template(lesson):
 def start_solver():
     global current_solution, is_solving
     if is_solving:
+        logger.info("Solver is already running")
         return "Solver is already running"
     
     if current_solution is None:
+        logger.info("Generating initial problem")
         current_solution = generate_problem()
         current_solution.set_student_group_and_teacher_list()
     
     is_solving = True
-    
+    logger.info("Starting solver")
     def solve_async():
         global is_solving
-        solver_manager.solveAndListen(0, lambda the_id: current_solution, on_best_solution_changed)
-        is_solving = False
+        try:
+            logger.info("Solver thread started")
+            solver_manager.solveAndListen(0, lambda the_id: current_solution, on_best_solution_changed)
+            logger.info("Solver finished")
+        except Exception as e:
+            logger.error(f"Error in solver thread: {str(e)}")
+        finally:
+            is_solving = False
     
     thread = threading.Thread(target=solve_async)
     thread.start()

@@ -2,6 +2,9 @@ from app.scheduler.solver import start_solver, get_current_solution, get_formatt
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from datetime import datetime
 
+import logging
+logger = logging.getLogger(__name__)
+
 def pick_color(subject):
     color_map = {
         'Math': 'blue',
@@ -67,19 +70,31 @@ def index():
 @main.route('/error')
 def error():
     return render_template('error.html')
+@main.route('/start_solver')
+def initialize_solver():
+    logger.info("Received request to start solver")
+    result = start_solver()
+    logger.info(f"Solver start result: {result}")
+    return jsonify({"message": result})
+
 @main.route('/solver_status')
 def solver_status():
+    is_running = is_solver_running()
+    has_solution = get_current_solution() is not None
+    logger.info(f"Solver status: running={is_running}, has_solution={has_solution}")
     return jsonify({
-        "is_running": is_solver_running(),
-        "has_solution": get_current_solution() is not None
+        "is_running": is_running,
+        "has_solution": has_solution
     })
 
 @main.route('/get_solution')
 def display_solution():
     solution = get_current_solution()
     if not solution:
+        logger.warning("No solution available when requested")
         return jsonify({"error": "No solution available. Please start the solver first."})
     
+    logger.info("Formatting solution for display")
     formatted_lessons = get_formatted_lessons(solution)
     
     subject_colors = {lesson['subject']: lesson['color'] for lesson in formatted_lessons}

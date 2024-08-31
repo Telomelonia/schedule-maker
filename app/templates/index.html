@@ -3,68 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Schedule Maker</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Timetable Solver</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <h1>Class Schedule Maker</h1>
-    <form method="POST">
-        <h2>Timeslots</h2>
-        <button type="button" id="add_timeslot">Add Timeslot</button>
-        <div id="timeslots"></div>
-
-        <h2>Rooms</h2>
-        <button type="button" id="add_room">Add Room</button>
-        <div id="rooms"></div>
-
-        <h2>Lessons</h2>
-        <button type="button" id="add_lesson">Add Lesson</button>
-        <div id="lessons"></div>
-
-        <h2>Time per Lesson (minutes)</h2>
-        <input type="number" name="time_per_lesson" required>
-
-        <br><br>
-        <input type="submit" value="Create Schedule">
-    </form>
+    <h1>Timetable Solver</h1>
+    <button id="startSolver">Start Solver</button>
+    <div id="status"></div>
+    <div id="solution"></div>
 
     <script>
-        let timeslotCount = 0;
-        let roomCount = 0;
-        let lessonCount = 0;
+        $(document).ready(function() {
+            $('#startSolver').click(function() {
+                $.get('/start_solver', function(data) {
+                    $('#status').text(data.message);
+                    checkStatus();
+                });
+            });
 
-        $('#add_timeslot').click(function() {
-            timeslotCount++;
-            $('#timeslots').append(`
-                <div>
-                    <input type="hidden" name="timeslot_count" value="${timeslotCount}">
-                    <label>Weekday: <input type="text" name="weekday_${timeslotCount - 1}" required></label>
-                    <label>Start Time: <input type="time" name="start_time_${timeslotCount - 1}" required></label>
-                    <label>End Time: <input type="time" name="end_time_${timeslotCount - 1}" required></label>
-                </div>
-            `);
-        });
+            function checkStatus() {
+                $.get('/solver_status', function(data) {
+                    if (data.is_running) {
+                        $('#status').text('Solver is running...');
+                        setTimeout(checkStatus, 5000);  // Check again in 5 seconds
+                    } else if (data.has_solution) {
+                        $('#status').text('Solution ready!');
+                        getSolution();
+                    } else {
+                        $('#status').text('Solver stopped without finding a solution.');
+                    }
+                });
+            }
 
-        $('#add_room').click(function() {
-            roomCount++;
-            $('#rooms').append(`
-                <div>
-                    <input type="hidden" name="room_count" value="${roomCount}">
-                    <label>Room Name: <input type="text" name="room_name_${roomCount - 1}" required></label>
-                </div>
-            `);
-        });
-
-        $('#add_lesson').click(function() {
-            lessonCount++;
-            $('#lessons').append(`
-                <div>
-                    <input type="hidden" name="lesson_count" value="${lessonCount}">
-                    <label>Subject: <input type="text" name="subject_${lessonCount - 1}" required></label>
-                    <label>Teacher: <input type="text" name="teacher_${lessonCount - 1}" required></label>
-                    <label>Group/Class: <input type="text" name="group_${lessonCount - 1}" required></label>
-                </div>
-            `);
+            function getSolution() {
+                $.get('/get_solution', function(data) {
+                    if (data.error) {
+                        $('#solution').text(data.error);
+                    } else {
+                        // Here you would typically render the solution data
+                        // For simplicity, we're just showing the number of lessons
+                        $('#solution').text('Found ' + data.lessons.length + ' lessons.');
+                    }
+                });
+            }
         });
     </script>
 </body>
