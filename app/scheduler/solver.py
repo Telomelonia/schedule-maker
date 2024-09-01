@@ -4,6 +4,7 @@ from app.scheduler.optaplanner_scheduler import Lesson, TimeTable, define_constr
 from optapy import solver_manager_create
 from optapy.types import SolverConfig, Duration
 from app.scheduler.problem import generate_problem
+from flask import session
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -59,7 +60,7 @@ def start_solver():
     
     if current_solution is None:
         logger.info("Generating initial problem")
-        current_solution = generate_problem()
+        current_solution = generate_problem(session.get('timeslots', []),session.get('rooms', []),session.get('lessons', []))
         current_solution.set_student_group_and_teacher_list()
     
     is_solving = True
