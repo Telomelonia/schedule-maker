@@ -20,52 +20,63 @@ def pick_color(subject):
     return color_map.get(subject, 'gray')
 
 main = Blueprint('main', __name__)
-@main.route('/', methods=['GET', 'POST'])
+@main.route('/')
 def index():
+    if 'timeslots' not in session or 'rooms' not in session or 'lessons' not in session:
+        # If not, redirect to the input page
+        return redirect(url_for('main.input'))
+    else:
+        return render_template('index.html')
+@main.route('/input', methods=['GET', 'POST'])
+def input():
     if request.method == 'POST':
+        timeslot_count = int(request.form['timeslot_count'])
+        room_count = int(request.form['room_count'])
+        lesson_count = int(request.form['lesson_count'])
         timeslots = []
-        for i in range(int(request.form['timeslot_count'])):
+        for i in range(timeslot_count):
             timeslots.append({
                 'weekday': request.form[f'weekday_{i}'],
                 'start_time': request.form[f'start_time_{i}'],
                 'end_time': request.form[f'end_time_{i}']
             })
-
+        
         rooms = []
-        for i in range(int(request.form['room_count'])):
+        for i in range(room_count):
             rooms.append({
                 'name': request.form[f'room_name_{i}']
             })
-
+        
         lessons = []
-        for i in range(int(request.form['lesson_count'])):
+        for i in range(lesson_count):
             lessons.append({
                 'subject': request.form[f'subject_{i}'],
                 'teacher': request.form[f'teacher_{i}'],
                 'group': request.form[f'group_{i}']
             })
-
+        
         time_per_lesson = int(request.form['time_per_lesson'])
-
+        
         # Perform validation
         total_lesson_time = len(lessons) * time_per_lesson
         total_timeslot_duration = sum([
             (datetime.strptime(t['end_time'], '%H:%M') - datetime.strptime(t['start_time'], '%H:%M')).seconds / 60
             for t in timeslots
         ])
-
+        
         if total_lesson_time <= total_timeslot_duration:
             # Store the data
             session['timeslots'] = timeslots
             session['rooms'] = rooms
             session['lessons'] = lessons
+            session['time_per_lesson'] = time_per_lesson
             
             # Redirect to a new route for processing
-            return redirect(url_for('main.getdata'))
+            return redirect(url_for('main.index'))
         else:
             return "Error: Not enough time slots for all lessons!"
-
-    return render_template('index.html')
+    
+    return render_template('input.html')
 
 @main.route('/error')
 def error():

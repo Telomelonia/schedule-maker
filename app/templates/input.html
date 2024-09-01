@@ -12,14 +12,17 @@
         <h2>Timeslots</h2>
         <button type="button" id="add_timeslot">Add Timeslot</button>
         <div id="timeslots"></div>
+        <input type="hidden" id="timeslot_count" name="timeslot_count" value="0">
 
         <h2>Rooms</h2>
         <button type="button" id="add_room">Add Room</button>
         <div id="rooms"></div>
+        <input type="hidden" id="room_count" name="room_count" value="0">
 
         <h2>Lessons</h2>
         <button type="button" id="add_lesson">Add Lesson</button>
         <div id="lessons"></div>
+        <input type="hidden" id="lesson_count" name="lesson_count" value="0">
 
         <h2>Time per Lesson (minutes)</h2>
         <input type="number" name="time_per_lesson" required>
@@ -37,34 +40,34 @@
             timeslotCount++;
             $('#timeslots').append(`
                 <div>
-                    <input type="hidden" name="timeslot_count" value="${timeslotCount}">
                     <label>Weekday: <input type="text" name="weekday_${timeslotCount - 1}" required></label>
                     <label>Start Time: <input type="time" name="start_time_${timeslotCount - 1}" required></label>
                     <label>End Time: <input type="time" name="end_time_${timeslotCount - 1}" required></label>
                 </div>
             `);
+            $('#timeslot_count').val(timeslotCount);
         });
 
         $('#add_room').click(function() {
             roomCount++;
             $('#rooms').append(`
                 <div>
-                    <input type="hidden" name="room_count" value="${roomCount}">
                     <label>Room Name: <input type="text" name="room_name_${roomCount - 1}" required></label>
                 </div>
             `);
+            $('#room_count').val(roomCount);
         });
 
         $('#add_lesson').click(function() {
             lessonCount++;
             $('#lessons').append(`
                 <div>
-                    <input type="hidden" name="lesson_count" value="${lessonCount}">
                     <label>Subject: <input type="text" name="subject_${lessonCount - 1}" required></label>
                     <label>Teacher: <input type="text" name="teacher_${lessonCount - 1}" required></label>
                     <label>Group/Class: <input type="text" name="group_${lessonCount - 1}" required></label>
                 </div>
             `);
+            $('#lesson_count').val(lessonCount);
         });
     </script>
 </body>

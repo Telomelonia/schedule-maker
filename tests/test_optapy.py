@@ -1,3 +1,4 @@
+# test to check the optapy is running perfectly
 import optapy
 from optapy import constraint_provider, planning_entity, planning_id, planning_solution, planning_variable
 
