@@ -1,11 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Timetable</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
-    
+
+<h2>Timetable</h2>
+
+<table id="timetable">
+    <thead>
+        <tr>
+            <th>By Room</th>
+            <th>By Teacher</th>
+            <th>By Student Group</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    </tbody>
+</table>
+
+<script>
+    // Fetch data from get_solution endpoint
+    fetch('http://127.0.0.1:5000/get_solution')
+        .then(response => response.json())
+        .then(data => {
+            // Extract data
+            const timeslots = data.timeslots.map(t => t.day_of_week + ' ' + t.start_time);
+            const rooms = data.rooms;
+            const teachers = data.teachers;
+            const studentGroups = data.student_groups;
+            const subjectColors = data.subject_colors;
+            
+            // Create table rows
+            const tableBody = document.getElementById('timetable').getElementsByTagName('tbody')[0];
+            for (let i = 0; i < timeslots.length; i++) {
+                const row = tableBody.insertRow();
+                const timeslotCell = row.insertCell();
+                timeslotCell.textContent = timeslots[i];
+
+                // Add cells for rooms, teachers, and student groups
+                for (let j = 0; j < rooms.length; j++) {
+                    const roomCell = row.insertCell();
+                    roomCell.textContent = rooms[j];
+
+                    // Find lesson for this timeslot, room, and student group
+                    const lesson = data.lessons.find(l => 
+                        l.timeslot === timeslots[i] && l.room === rooms[j]
+                    );
+                    if (lesson) {
+                        // Create a div to display lesson details
+                        const lessonDiv = document.createElement('div');
+                        lessonDiv.style.backgroundColor = subjectColors[lesson.subject];
+                        lessonDiv.innerHTML = `
+                            ${lesson.subject}
+                            <br>
+                            ${lesson.teacher}
+                            <br>
+                            ${lesson.student_group}th grade
+                        `;
+                        roomCell.appendChild(lessonDiv);
+                    }
+                }
+            }
+        })
+        .catch(error => console.error('Error fetching data:', error));
+</script>
+
 </body>
 </html>
