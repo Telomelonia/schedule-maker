@@ -3,11 +3,12 @@ import logging
 from app.scheduler.optaplanner_scheduler import Lesson, TimeTable, define_constraints
 from optapy import solver_manager_create
 from optapy.types import SolverConfig, Duration
-from app.scheduler.problem import generate_problem
-from flask import session
+from app.scheduler.problem import generate_problem, sample_problem
+from flask import session, request
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+check_sample = request.form['check_sample'] == 'true'
 
 #solver config
 solver_config = SolverConfig().withEntityClasses(Lesson) \
@@ -60,7 +61,10 @@ def start_solver():
     
     if current_solution is None:
         logger.info("Generating initial problem")
-        current_solution = generate_problem(session.get('timeslots', []),session.get('rooms', []),session.get('lessons', []))
+        if check_sample:
+            current_solution = sample_problem()
+        else: 
+            current_solution = generate_problem(session.get('timeslots', []),session.get('rooms', []),session.get('lessons', []))
         current_solution.set_student_group_and_teacher_list()
     
     is_solving = True

@@ -1,62 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Schedule Maker</title>
+    <title>Data Entry</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Class Schedule Maker</h1>
-    <form method="POST">
+    <h1>Enter Timeslots and Rooms</h1>
+    <form action="{{ url_for('submit') }}" method="post">
         <h2>Timeslots</h2>
-        <button type="button" id="add_timeslot">Add Timeslot</button>
-        <div id="timeslots"></div>
-        <input type="hidden" id="timeslot_count" name="timeslot_count" value="0">
-
+        <div id="timeslots">
+            <div>
+                <input type="text" name="timeslot" placeholder="id,day,start_hour,start_minute,end_hour,end_minute">
+            </div>
+        </div>
+        <button type="button" onclick="addTimeslot()">Add Timeslot</button>
+        
         <h2>Rooms</h2>
-        <button type="button" id="add_room">Add Room</button>
-        <div id="rooms"></div>
-        <input type="hidden" id="room_count" name="room_count" value="0">
-
+        <div id="rooms">
+            <div>
+                <input type="text" name="room" placeholder="id,name">
+            </div>
+        </div>
+        <button type="button" onclick="addRoom()">Add Room</button>
+        
         <h2>Lessons</h2>
+        <div id="lessons">
+            <div>
+                <label>Subject: <input type="text" name="subject_0" required></label>
+                <label>Teacher: <input type="text" name="teacher_0" required></label>
+                <label>Group/Class: <input type="text" name="group_0" required></label>
+            </div>
+        </div>
         <button type="button" id="add_lesson">Add Lesson</button>
-        <div id="lessons"></div>
-        <input type="hidden" id="lesson_count" name="lesson_count" value="0">
-
-        <h2>Time per Lesson (minutes)</h2>
-        <input type="number" name="time_per_lesson" required>
-
+        
+        <input type="hidden" id="lesson_count" name="lesson_count" value="1">
+        <input type="hidden" id="check_sample" name="check_sample" value="false">
+        
         <br><br>
-        <input type="submit" value="Create Schedule">
+        <input type="submit" value="Submit">
     </form>
 
+    <button id="sample_data">Use Sample Data</button>
+
     <script>
-        let timeslotCount = 0;
-        let roomCount = 0;
-        let lessonCount = 0;
+        let lessonCount = 1;
+        let check_sample = false;
 
-        $('#add_timeslot').click(function() {
-            timeslotCount++;
-            $('#timeslots').append(`
-                <div>
-                    <label>Weekday: <input type="text" name="weekday_${timeslotCount - 1}" required></label>
-                    <label>Start Time: <input type="time" name="start_time_${timeslotCount - 1}" required></label>
-                    <label>End Time: <input type="time" name="end_time_${timeslotCount - 1}" required></label>
-                </div>
-            `);
-            $('#timeslot_count').val(timeslotCount);
-        });
+        function addTimeslot() {
+            var div = document.createElement('div');
+            div.innerHTML = '<input type="text" name="timeslot" placeholder="id,day,start_hour,start_minute,end_hour,end_minute">';
+            document.getElementById('timeslots').appendChild(div);
+        }
 
-        $('#add_room').click(function() {
-            roomCount++;
-            $('#rooms').append(`
-                <div>
-                    <label>Room Name: <input type="text" name="room_name_${roomCount - 1}" required></label>
-                </div>
-            `);
-            $('#room_count').val(roomCount);
-        });
+        function addRoom() {
+            var div = document.createElement('div');
+            div.innerHTML = '<input type="text" name="room" placeholder="id,name">';
+            document.getElementById('rooms').appendChild(div);
+        }
 
         $('#add_lesson').click(function() {
             lessonCount++;
@@ -68,6 +68,11 @@
                 </div>
             `);
             $('#lesson_count').val(lessonCount);
+        });
+
+        $('#sample_data').click(function() {
+            check_sample = true;
+            $('#check_sample').val('true');
         });
     </script>
 </body>
