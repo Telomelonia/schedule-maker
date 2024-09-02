@@ -4,7 +4,8 @@ from datetime import datetime
 
 import logging
 logger = logging.getLogger(__name__)
-
+def sample():
+    return request.form['check_sample'] == 'true'
 def pick_color(subject):
     color_map = {
         'Math': 'blue',
