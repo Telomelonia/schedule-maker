@@ -11,6 +11,9 @@
     <button id="startSolver">Start Solver</button>
     <div id="status"></div>
     <div id="solution"></div>
+    <div id="redirectButtonContainer" style="display: none;">
+        <button id="redirectButton">View Solution</button>
+    </div>
 
     <script>
         $(document).ready(function() {
@@ -43,9 +46,15 @@
                         // Here you would typically render the solution data
                         // For simplicity, we're just showing the number of lessons
                         $('#solution').text('Found ' + data.lessons.length + ' lessons.');
+                        // Show the redirect button
+                        $('#redirectButtonContainer').show();
                     }
                 });
             }
+
+            $('#redirectButton').click(function() {
+                window.location.href = '/show';
+            });
         });
     </script>
 </body>
