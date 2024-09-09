@@ -1,5 +1,5 @@
 # schedule-maker
- Bot for making TT/schedule for classes
+AI Bot for making TT/schedule for classes
 
 
 ## TODO
