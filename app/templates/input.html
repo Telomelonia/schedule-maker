@@ -24,12 +24,12 @@
         <div id="lessons"></div>
         <input type="hidden" id="lesson_count" name="lesson_count" value="0">
 
-        <h2>Time per Lesson (minutes)</h2>
+        <h2>Time per Lesson (minutes)[required]</h2>
         <input type="number" name="time_per_lesson" required>
 
         <br><br>
-
-        <button id="sample_data">Use Sample Data(for future)</button>
+        <input type="hidden" id="check_sample" name="check_sample" value="false">
+        <button id="sample_data">Use Sample Data</button>
 
         <input type="submit" value="Create Schedule">
     </form>
@@ -38,7 +38,6 @@
         let timeslotCount = 0;
         let roomCount = 0;
         let lessonCount = 0;
-
         $('#add_timeslot').click(function() {
             timeslotCount++;
             $('#timeslots').append(`
@@ -72,9 +71,10 @@
             `);
             $('#lesson_count').val(lessonCount);
 
-            $('#sample_data').click(function() {
-                $('#check_sample').val('true');
-            });
+            
+        });
+        $('#sample_data').click(function() {
+            $('#check_sample').val('true');
         });
     </script>
 </body>
