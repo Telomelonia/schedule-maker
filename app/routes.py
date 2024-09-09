@@ -20,6 +20,10 @@ def pick_color(subject):
     return color_map.get(subject, 'gray')
 
 main = Blueprint('main', __name__)
+@main.route('/clear_session')
+def clear_session():
+    session.clear()
+    return redirect(url_for('main.index'))
 @main.route('/')
 def index():
     if 'timeslots' not in session or 'rooms' not in session or 'lessons' not in session:
