@@ -4,8 +4,7 @@ from datetime import datetime
 
 import logging
 logger = logging.getLogger(__name__)
-def sample():
-    return request.form['check_sample'] == 'true'
+
 def pick_color(subject):
     color_map = {
         'Math': 'blue',
@@ -64,7 +63,10 @@ def input():
             (datetime.strptime(t['end_time'], '%H:%M') - datetime.strptime(t['start_time'], '%H:%M')).seconds / 60
             for t in timeslots
         ])
-        
+        if request.form['check_sample'] == 'true':
+            session['sample'] = True
+        else:
+            session['sample'] = False
         if total_lesson_time <= total_timeslot_duration:
             # Store the data
             session['timeslots'] = timeslots

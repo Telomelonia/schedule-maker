@@ -5,7 +5,6 @@ from optapy import solver_manager_create
 from optapy.types import SolverConfig, Duration
 from app.scheduler.problem import generate_problem, sample_problem
 from flask import session
-# from app.routes import sample
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -60,7 +59,8 @@ def start_solver():
     
     if current_solution is None:
         logger.info("Generating initial problem")
-        if sample:
+        logger.info(session['sample'])
+        if session['sample']:
             current_solution = sample_problem()
         else: 
             current_solution = generate_problem(session.get('timeslots', []),session.get('rooms', []),session.get('lessons', []))
