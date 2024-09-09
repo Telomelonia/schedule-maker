@@ -1,0 +1,14 @@
+#schedule-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#schedule-table th, #schedule-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+#schedule-table th {
+    background-color: #f0f0f0;
+}
