@@ -1,5 +1,5 @@
 # schedule-maker
-Used Flask + Optapy
+Used Flask + [Optapy](https://github.com/optapy/optapy)
 <br/>
 AI Bot for making TT/schedule for classes
 
