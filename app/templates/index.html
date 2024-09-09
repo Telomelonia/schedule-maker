@@ -1,31 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Schedule Input</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable Solver</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <h1>Create Schedule</h1>
-    <form method="post">
-        <div id="teachers">
-            <div class="teacher">
-                <label>Teacher:</label>
-                <input type="text" name="teacher[]">
-                <label>Free Time Slots (comma-separated, e.g., Mon-9, Tue-10):</label>
-                <input type="text" name="time_slots[]">
-                <label>Number of Classes:</label>
-                <input type="number" name="classes_count[]">
-            </div>
-        </div>
-        <button type="button" onclick="addTeacher()">Add Another Teacher</button><br><br>
-        <button type="submit">Submit</button>
-    </form>
+    <h1>Timetable Solver</h1>
+    <button id="startSolver">Start Solver</button>
+    <div id="status"></div>
+    <div id="solution"></div>
+
     <script>
-        function addTeacher() {
-            let container = document.getElementById("teachers");
-            let newTeacher = container.children[0].cloneNode(true);
-            newTeacher.querySelectorAll("input").forEach(input => input.value = "");
-            container.appendChild(newTeacher);
-        }
+        $(document).ready(function() {
+            $('#startSolver').click(function() {
+                $.get('/start_solver', function(data) {
+                    $('#status').text(data.message);
+                    checkStatus();
+                });
+            });
+
+            function checkStatus() {
+                $.get('/solver_status', function(data) {
+                    if (data.is_running) {
+                        $('#status').text('Solver is running...');
+                        setTimeout(checkStatus, 5000);  // Check again in 5 seconds
+                    } else if (data.has_solution) {
+                        $('#status').text('Solution ready!');
+                        getSolution();
+                    } else {
+                        $('#status').text('Solver stopped without finding a solution.');
+                    }
+                });
+            }
+
+            function getSolution() {
+                $.get('/get_solution', function(data) {
+                    if (data.error) {
+                        $('#solution').text(data.error);
+                    } else {
+                        // Here you would typically render the solution data
+                        // For simplicity, we're just showing the number of lessons
+                        $('#solution').text('Found ' + data.lessons.length + ' lessons.');
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
