@@ -136,22 +136,3 @@ def getdata():
 @main.route('/show')
 def show():
     return render_template('show.html')
-# @main.route('/process_schedule')
-# def process_schedule():
-#     # Retrieve the data from the session
-#     timeslots = session.get('timeslots', [])
-#     rooms = session.get('rooms', [])
-#     lessons = session.get('lessons', [])
-#     time_per_lesson = session.get('time_per_lesson', 0)
-
-#     # Process the data (add your scheduling logic here)
-#     # For example:
-#     schedule = create_schedule(timeslots, rooms, lessons, time_per_lesson)
-
-#     # Render a template with the processed data
-#     return render_template('schedule.html', schedule=schedule)
-
-# def create_schedule(timeslots, rooms, lessons, time_per_lesson):
-#     # Implement your scheduling algorithm here
-#     # This is just a placeholder function
-#     return "Your schedule will be created here
