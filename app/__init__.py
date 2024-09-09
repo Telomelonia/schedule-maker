@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__,static_folder='static', static_url_path='/static')
     app.secret_key = 'random@123'
     
     from .routes import main as main_blueprint
