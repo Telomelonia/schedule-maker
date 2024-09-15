@@ -1,14 +1,19 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Schedule Maker</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    </head>
-    <body>
-        <div id="schedule-container"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Maker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div id="grouping-controls">
+        <button id="group-by-student">Group by Student</button>
+        <button id="group-by-room">Group by Room</button>
+        <button id="group-by-teacher">Group by Teacher</button>
+    </div>
+    <div id="schedule-container"></div>
 
-        <script src="{{ url_for('static', filename='show.js') }}"></script>
-    </body>
-    </html>
+    <script src="{{ url_for('static', filename='show.js') }}"></script>
+</body>
+</html>
